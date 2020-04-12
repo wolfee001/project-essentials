@@ -1,0 +1,13 @@
+find_program(CPPCHECK cppcheck)
+if(CPPCHECK)
+  set(CMAKE_CXX_CPPCHECK ${CPPCHECK} --suppress=missingIncludeSystem --enable=warning,style,performance,portability,information --inconclusive --std=c++17 --quiet --inline-suppr)
+else()
+  message(SEND_ERROR "cppcheck requested but executable not found")
+endif()
+
+find_program(CLANGTIDY clang-tidy)
+if(CLANGTIDY)
+  set(CMAKE_CXX_CLANG_TIDY ${CLANGTIDY})
+else()
+  message(SEND_ERROR "clang-tidy requested but executable not found")
+endif()
