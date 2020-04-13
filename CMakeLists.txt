@@ -4,8 +4,11 @@ include(CompilerWarnings.cmake)
 include(StandardProjectSettings.cmake)
 include(StaticAnalyzers.cmake)
 
-macro(setup_project_essentials directory)  
-  file(COPY .clang-format .clang-tidy DESTINATION ${PROJECT_SOURCE_DIR})
+set_property(DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY project_essentials_path ${CMAKE_CURRENT_LIST_DIR})
+
+macro(setup_project_essentials)
+  get_property(project_essentials_path DIRECTORY ${PROJECT_SOURCE_DIR} PROPERTY project_essentials_path)
+  file(COPY ${project_essentials_path}/.clang-format ${project_essentials_path}/.clang-tidy DESTINATION ${PROJECT_SOURCE_DIR})
 
   standard_setup(17)
   enable_cppcheck()
