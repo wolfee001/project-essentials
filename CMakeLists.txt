@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
 include(CompilerWarnings.cmake)
+include(Conan.cmake)
 include(StandardProjectSettings.cmake)
 include(StaticAnalyzers.cmake)
 
@@ -13,6 +14,22 @@ macro(setup_project_essentials)
   standard_setup(17)
   enable_cppcheck()
   enable_clangtidy()
+
+  set(conanfile "")
+  if(EXISTS ${PROJECT_SOURCE_DIR}/conanfile.txt)
+    set(conanfile conanfile.txt)
+  endif()
+  if(EXISTS ${PROJECT_SOURCE_DIR}/conanfile.py)
+    set(conanfile conanfile.py)
+  endif()
+
+  if(NOT ${conanfile} STREQUAL "")
+    set(conan_buildtype ${CMAKE_BUILD_TYPE})
+    if(CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+      set(conan_buildtype "Release")
+    endif()
+    setup_conan(${conanfile} ${conan_buildtype})
+  endif()
 
   add_library(${PROJECT_NAME}_warnings INTERFACE)
   set_project_warnings(${PROJECT_NAME}_warnings)
