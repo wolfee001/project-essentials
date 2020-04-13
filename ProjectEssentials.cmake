@@ -1,12 +1,14 @@
-if(NOT PROJECT_ESSENTIALS_DIR)
-  message(SEND_ERROR "PROJECT_ESSENTIALS_DIR not set!")
-endif()
+macro(setup_project_essentials directory)  
+  include(${directory}/CompilerWarnings.cmake)
+  include(${directory}/StandardProjectSettings.cmake)
+  include(${directory}/StaticAnalyzers.cmake)
 
-include(${PROJECT_ESSENTIALS_DIR}/CompilerWarnings.cmake)
-include(${PROJECT_ESSENTIALS_DIR}/StandardProjectSettings.cmake)
-include(${PROJECT_ESSENTIALS_DIR}/StaticAnalyzers.cmake)
+  file(COPY ${directory}/.clang-format ${directory}/.clang-tidy DESTINATION ${PROJECT_SOURCE_DIR})
 
-file(COPY ${PROJECT_ESSENTIALS_DIR}/.clang-format ${PROJECT_ESSENTIALS_DIR}/.clang-tidy DESTINATION ${PROJECT_SOURCE_DIR})
+  standard_setup(17)
+  enable_cppcheck()
+  enable_clangtidy()
 
-add_library(${PROJECT_NAME}_warnings INTERFACE)
-set_project_warnings(${PROJECT_NAME}_warnings)
+  add_library(${PROJECT_NAME}_warnings INTERFACE)
+  set_project_warnings(${PROJECT_NAME}_warnings)
+endmacro()
